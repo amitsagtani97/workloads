@@ -88,7 +88,7 @@
     - name: Get Prometheus data aggregations
       include_role:
         name: prometheus_metirc_aggregations
-      when: prom_metric_aggregates and prom_metric_aggregates != ""
+      when: prom_aggregate_collect and prom_aggregate_collect != ""
 
     - name: Set NodeVertical template
       set_fact:

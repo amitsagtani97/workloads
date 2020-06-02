@@ -85,6 +85,11 @@
         name: pprof-collection
       when: pprof_collect and pprof_collect != ""
 
+    - name: Get Prometheus data aggregations
+      include_role:
+        name: prometheus_metirc_aggregations
+      when: prom_metric_aggregates and prom_metric_aggregates != ""
+
     - name: Set NodeVertical template
       set_fact:
         nodevertical_template: "{% if nodevertical_heavy|bool %}workload-nodevertical-heavy-script-cm.yml.j2{% else %}workload-nodevertical-script-cm.yml.j2{% endif %}"

@@ -175,6 +175,11 @@ Default: `false`
 If you'd like to enable pprof profile data collection of kubeapiserver and prometheus through conprof(https://github.com/conprof/conprof).
 Enabling this will create a few services to collect profiles from the apiserver pods and then create a conprof tarball in the pbench tarball
 
+### PROM_AGGREGATE_COLLECT
+Default: `false`
+If you'd like to enable collection of prometheus data aggregation of kubeapiserver through touchstone(https://github.com/cloud-bulldozer/touchstone).
+Enabling this will create a few services to produce prometheus data aggregations from the apiserver pods.
+
 ### NODEVERTICAL_HEAVY_PROBE_PERIOD
 Default: `30`
 Readiness probe period for the application deployed by the heavy nodevertical.

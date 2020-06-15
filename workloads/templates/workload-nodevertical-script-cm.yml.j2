@@ -51,12 +51,6 @@ data:
       envsubst < /root/workload/conprof_stop.sh > /tmp/conprof_stop.sh
       workload_log "Done configuring conprof"
     fi
-    if [ "${PROM_AGGREGATE_COLLECT}" = "true" ]; then
-      workload_log "Configuring touchstone"
-      envsubst < /root/workload/prom_config.yaml.template > /tmp/prom_config.yaml
-      envsubst < /root/workload/prom_aggregation_start.sh > /tmp/prom_aggregation_start.sh
-      workload_log "Done configuring touchstone"
-    fi
     workload_log "Running NodeVertical workload"
     if [ "${PBENCH_INSTRUMENTATION}" = "true" ]; then
       pbench-user-benchmark -- sh /root/workload/workload.sh
@@ -108,10 +102,6 @@ data:
       workload_log "Starting conprof"
       bash /tmp/conprof_start.sh
     fi
-    if [ "${PROM_AGGREGATE_COLLECT}" = "true" ]; then
-      workload_log "Starting touchstone"
-      bash prom_aggregation_start.sh
-    fi
     if [ "${PBENCH_INSTRUMENTATION}" = "true" ]; then
       result_dir=${benchmark_results_dir}
     fi
@@ -128,7 +118,13 @@ data:
     exit_code=$?
     end_time=$(date +%s)
     duration=$((end_time-start_time))
-
+    if [ "${PROM_AGGREGATE_COLLECT}" = "true" ]; then
+      workload_log "Configuring touchstone"
+      envsubst < /root/workload/prom_config.yaml.template > /tmp/prom_config.yaml
+      envsubst < /root/workload/prom_aggregation_start.sh > /tmp/prom_aggregation_start.sh
+      workload_log "Starting touchstone"
+      bash prom_aggregation_start.sh
+    fi
     if [ "${PPROF_COLLECT}" = "true" ]; then
       workload_log "Stopping conprof"
       bash /tmp/conprof_stop.sh
@@ -186,25 +182,20 @@ data:
           privileged: false
       nodeSelector:
         nodevertical: 'true'
-
-
   prom_config.yaml.template: |
+    ---
     query:
       - sum(container_memory_rss{namespace=~"openshift-kube-apiserver",name!="",container=~"kube-apiserver.*"}) by (container)
-      - up
     headers:
-      -  {{bearer_token.stdout}}
+      -  {{prom_bearer_token.stdout}}
     disable_ssl:
       - True
     start_time_list:
-      - 1588791810
-      - 1588791710
+      - $start_time
     end_time_list:
-      - 1588795118
-      - 1588795018
+      - $end_time
     url:
-      - 'prometheus-k8s-openshift-monitoring.apps.{{clustername}}.{{base_domain}}'
-
+      - prometheus-k8s-openshift-monitoring.apps.{{clustername}}.{{base_domain}}
   conprof.yaml.template: |
     scrape_configs:
     - job_name: 'apiserver0'

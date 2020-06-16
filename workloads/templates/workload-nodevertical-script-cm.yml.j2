@@ -93,7 +93,7 @@ data:
   prom_aggregation_start.sh: |
     #!/bin/sh
     set -o pipefail
-    touchstone_compare -database prometheus -v -prom_config /tmp/prom_config.yaml > /tmp/prom_aggregations/aggregations.json
+    touchstone_compare -database prometheus -v -prom_config /tmp/prom_config.yaml > ${result_dir}/aggregations.json
   workload.sh: |
     #!/bin/sh
     set -o pipefail
@@ -123,9 +123,8 @@ data:
       envsubst < /root/workload/prom_config.yaml.template > /tmp/prom_config.yaml
       envsubst < /root/workload/prom_aggregation_start.sh > /tmp/prom_aggregation_start.sh
       workload_log "Starting touchstone"
-      bash prom_aggregation_start.sh
-      tar -czvf ${result_dir}/prom_aggregation.tar.gz /tmp/prom_aggregations/
-      workload_log "Completed prometheus data aggregations and stored tarballs"
+      bash /tmp/prom_aggregation_start.sh
+      workload_log "Completed prometheus data aggregations"
     fi
     if [ "${PPROF_COLLECT}" = "true" ]; then
       workload_log "Stopping conprof"

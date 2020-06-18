@@ -1,16 +1,16 @@
-- name: check sa for prom_server
-  shell: "oc get sa -n openshift-kube-apiserver | grep prom_server | wc -l"
+- name: check sa for prom-server
+  shell: "oc get sa -n openshift-kube-apiserver | grep prom-server | wc -l"
   register: apiserver_pprof_sa
 
 - name: create sa to access pprof profiles of apiserver
   block:
     - name: create sa
-      shell: "oc -n openshift-kube-apiserver create sa prom_server"
+      shell: "oc -n openshift-kube-apiserver create sa prom-server"
 
     - name: add cluster-admin clusterrrole
-      shell: "oc create clusterrolebinding pprof-admin --clusterrole cluster-admin --serviceaccount=openshift-kube-apiserver:prom_server"
+      shell: "oc create clusterrolebinding prom-admin --clusterrole cluster-admin --serviceaccount=openshift-kube-apiserver:prom-server"
   when: apiserver_pprof_sa.stdout | int == 0
 
 - name: get the bearer token
-  shell: "oc -n openshift-kube-apiserver sa get-token prom_server"
+  shell: "oc -n openshift-kube-apiserver sa get-token prom-server"
   register: prom_bearer_token

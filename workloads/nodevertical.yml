@@ -87,7 +87,7 @@
 
     - name: Get Prometheus authorizations
       include_role:
-        name: prometheus_metirc_aggregations
+        name: prometheus_metric_aggregation
       when: prom_aggregate_collect and prom_aggregate_collect != ""
 
     - name: Set NodeVertical template

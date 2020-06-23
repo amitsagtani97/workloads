@@ -93,7 +93,7 @@ data:
   prom_aggregation_start.sh: |
     #!/bin/sh
     set -o pipefail
-    touchstone_compare -database prometheus -v -prom_config /tmp/prom_config.yaml > ${result_dir}/aggregations.json
+    touchstone_compare -database prometheus -v -prom_config /tmp/prom_config.yaml
   workload.sh: |
     #!/bin/sh
     set -o pipefail
@@ -196,7 +196,7 @@ data:
     end_time_list:
       - $end_time
     url:
-      - prometheus-k8s-openshift-monitoring.apps.{{clustername}}.{{base_domain}}
+      - https://prometheus-k8s-openshift-monitoring.apps.{{clustername}}.{{base_domain}}
   conprof.yaml.template: |
     scrape_configs:
     - job_name: 'apiserver0'

@@ -187,9 +187,6 @@ data:
     ---
     query:
       - sum(container_memory_rss{namespace=~"openshift-kube-apiserver",name!="",container=~"kube-apiserver.*"}) by (container)
-      - sum(container_memory_rss{namespace!="",name!="",namespace=~"openshift-etcd",container=~"etcd"}) by (container)
-      - sum(rate(container_cpu_usage_seconds_total{name!="",clustername=~"$clustername",namespace!="",namespace=~"openshift-kube-apiserver",container=~"kube-apiserver"}[5m])) by (container)
-      - sum(rate(container_cpu_usage_seconds_total{name!="",clustername=~"$clustername",namespace!="",namespace=~"openshift-etcd",container=~"etcd"}[5m])) by (container)
     headers:
       -  {{prom_bearer_token.stdout}}
     disable_ssl:

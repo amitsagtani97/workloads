@@ -123,8 +123,9 @@ data:
       envsubst < /root/workload/prom_config.yaml.template > /tmp/prom_config.yaml
       envsubst < /root/workload/prom_aggregation_start.sh > /tmp/prom_aggregation_start.sh
       workload_log "Starting touchstone"
-      bash /tmp/prom_aggregation_start.sh
-      workload_log "Completed prometheus data aggregations"
+      bash /tmp/prom_aggregation_start.sh > /tmp/prom_aggregation.log
+      cp /tmp/prom_aggregation.log ${result_dir}/prom_aggregation.log
+      workload_log "Completed prometheus data aggregations and stored logs"
     fi
     if [ "${PPROF_COLLECT}" = "true" ]; then
       workload_log "Stopping conprof"
@@ -185,9 +186,11 @@ data:
         nodevertical: 'true'
   prom_config.yaml.template: |
     ---
-    query:
+    url:
+      - https://prometheus-k8s-openshift-monitoring.apps.{{clustername}}.{{base_domain}}
+    query_list:
       - sum(container_memory_rss{namespace=~"openshift-kube-apiserver",name!="",container=~"kube-apiserver.*"}) by (container)
-    headers:
+    bearer_token:
       -  {{prom_bearer_token.stdout}}
     disable_ssl:
       - True
@@ -195,8 +198,6 @@ data:
       - $start_time
     end_time_list:
       - $end_time
-    url:
-      - https://prometheus-k8s-openshift-monitoring.apps.{{clustername}}.{{base_domain}}
   conprof.yaml.template: |
     scrape_configs:
     - job_name: 'apiserver0'

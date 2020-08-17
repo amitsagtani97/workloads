@@ -49,6 +49,11 @@
         name: pprof-collection
       when: pprof_collect and pprof_collect != ""
 
+    - name: Get Prometheus authorizations
+        include_role:
+          name: prometheus_metric_aggregation
+        when: prom_aggregate_collect and prom_aggregate_collect != ""
+
     - name: Template workload templates
       template:
         src: "{{item.src}}"

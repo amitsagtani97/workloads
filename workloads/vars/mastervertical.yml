@@ -35,6 +35,9 @@ pbench_server: "{{ lookup('env', 'PBENCH_SERVER')|default('', true) }}"
 # pporf variables
 pprof_collect: "{{ lookup('env', 'PPROF_COLLECT')|default(false, true)|bool|lower }}"
 
+# touchstone variables
+prom_aggregate_collect: "{{ lookup('env', 'PROM_AGGREGATE_COLLECT')|default(false, true)|bool|lower }}"
+
 # Azure auth vars to set for ocp on azure
 azure_auth: "{{ lookup('env', 'AZURE_AUTH')|default(false, true)|bool|lower }}"
 azure_auth_file: "{{ lookup('env', 'AZURE_AUTH_FILE')|default('', true) }}"

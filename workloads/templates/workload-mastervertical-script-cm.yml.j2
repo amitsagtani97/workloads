@@ -92,7 +92,10 @@ data:
     #!/bin/sh
     set -o pipefail
     pkill conprof
-
+  prom_aggregation_start.sh: |
+    #!/bin/sh
+    set -o pipefail
+    touchstone_compare -database prometheus -v -prom_config /tmp/prom_config.yaml
   workload.sh: |
     #!/bin/sh
     set -o pipefail
@@ -109,7 +112,7 @@ data:
     if [[ "${AZURE_AUTH}" == "true" ]]; then
       export AZURE_AUTH_LOCATION=/tmp/azure_auth
     fi
-    start_time=$(date +%s)
+    export start_time=$(date +%s)
     export cluster_name={{ snafu_cluster_name }}
     export test_user={{ snafu_user }}
     export es={{ snafu_es_host }}
@@ -117,9 +120,18 @@ data:
     export es_index={{ snafu_es_index_prefix }}
     VIPERCONFIG=/tmp/mastervertical.yaml run_snafu -t cl scale-ci --cl-output True --dir "${result_dir}" -p openshift-tests | tee "${result_dir}/clusterloader.txt"
     exit_code=$?
-    end_time=$(date +%s)
+    export end_time=$(date +%s)
     duration=$((end_time-start_time))
 
+    if [ "${PROM_AGGREGATE_COLLECT}" = "true" ]; then
+      workload_log "Configuring touchstone"
+      envsubst < /root/workload/prom_config.yaml.template > /tmp/prom_config.yaml
+      envsubst < /root/workload/prom_aggregation_start.sh > /tmp/prom_aggregation_start.sh
+      workload_log "Starting touchstone"
+      bash /tmp/prom_aggregation_start.sh > /tmp/prom_aggregation.log
+      cp /tmp/prom_aggregation.log ${result_dir}/prom_aggregation.log
+      workload_log "Completed prometheus data aggregations and stored logs"
+    fi
     if [ "${PPROF_COLLECT}" = "true" ]; then
       workload_log "Stopping conprof"
       bash /tmp/conprof_stop.sh
@@ -592,6 +604,20 @@ data:
       required: true
     labels:
       template: routeTemplate
+  prom_config.yaml.template: |
+    ---
+    url:
+      - https://prometheus-k8s-openshift-monitoring.apps.{{clustername}}.{{base_domain}}
+    query_list:
+      - sum(container_memory_rss{namespace=~"openshift-kube-apiserver",name!="",container=~"kube-apiserver.*"}) by (container)
+    bearer_token:
+      -  {{prom_bearer_token.stdout}}
+    disable_ssl:
+      - True
+    start_time_list:
+      - $start_time
+    end_time_list:
+      - $end_time
   conprof.yaml.template: |
     scrape_configs:
     - job_name: 'apiserver0'

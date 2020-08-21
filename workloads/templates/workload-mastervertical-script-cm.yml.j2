@@ -606,19 +606,16 @@ data:
       template: routeTemplate
   prom_config.yaml.template: |
     ---
-    url:
-      - https://prometheus-k8s-openshift-monitoring.apps.{{clustername}}.{{base_domain}}
-    query_list:
-      - sum(container_memory_rss{namespace=~"openshift-kube-apiserver",name!="",container=~"kube-apiserver.*"}) by (container)
-    bearer_token:
-      -  {{prom_bearer_token.stdout}}
-    disable_ssl:
-      - True
-    start_time_list:
-      - $start_time
-    end_time_list:
-      - $end_time
-    index_result_to_es: True
+    - url: https://prometheus-k8s-openshift-monitoring.apps.{{clustername}}.{{base_domain}}
+      query_list:
+        - sum(container_memory_rss{namespace=~"openshift-kube-apiserver",name!="",container=~"kube-apiserver.*"}) by (container)
+      bearer_token: {{prom_bearer_token.stdout}}
+      disable_ssl: True
+      start_time_list:
+        - $start_time
+      end_time_list:
+        - $end_time
+      index_result_to_es: True
   conprof.yaml.template: |
     scrape_configs:
     - job_name: 'apiserver0'

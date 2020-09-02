@@ -128,8 +128,7 @@ data:
       envsubst < /root/workload/prom_config.yaml.template > /tmp/prom_config.yaml
       envsubst < /root/workload/prom_aggregation_start.sh > /tmp/prom_aggregation_start.sh
       workload_log "Starting touchstone"
-      bash /tmp/prom_aggregation_start.sh > /tmp/prom_aggregation.log
-      cp /tmp/prom_aggregation.log ${result_dir}/prom_aggregation.log
+      bash /tmp/prom_aggregation_start.sh
       workload_log "Completed prometheus data aggregations and stored logs"
     fi
     if [ "${PPROF_COLLECT}" = "true" ]; then

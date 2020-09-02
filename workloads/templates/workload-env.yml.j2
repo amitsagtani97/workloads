@@ -19,6 +19,8 @@ data:
   MASTERVERTICAL_PROJECTS: "{{mastervertical_projects}}"
   EXPECTED_MASTERVERTICAL_DURATION: "{{expected_mastervertical_duration}}"
   AZURE_AUTH: "{{azure_auth|bool|lower}}"
+  TOUCHSTONE_ES_HOST: "{{ touchstone_es_host }}"
+  TOUCHSTONE_ES_PORT: "{{ touchstone_es_port }}"
 {% elif workload_job == "network" %}
   NETWORK_TEST_UPERF_IMAGE: "{{network_test_uperf_image}}"
   NETWORK_TEST_UPERF_SSHD_PORT: "{{network_test_uperf_sshd_port}}"
@@ -55,6 +57,8 @@ data:
   AZURE_AUTH: "{{azure_auth|bool|lower}}"
   NODEVERTICAL_HEAVY_PROBE_ENDPOINT: "{{ nodevertical_heavy_probe_endpoint }}"
   NODEVERTICAL_HEAVY_PROBE_PERIOD: "{{ nodevertical_heavy_probe_period }}"
+  TOUCHSTONE_ES_HOST: "{{ touchstone_es_host }}"
+  TOUCHSTONE_ES_PORT: "{{ touchstone_es_port }}"
 {% elif workload_job == "podvertical" %}
   PBENCH_INSTRUMENTATION: "{{pbench_instrumentation|bool|lower}}"
   ENABLE_PBENCH_COPY: "{{enable_pbench_copy|bool|lower}}"

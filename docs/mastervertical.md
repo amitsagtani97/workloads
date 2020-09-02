@@ -137,6 +137,14 @@ Default: `false`
 If you'd like to enable collection of prometheus data aggregation of kubeapiserver through touchstone(https://github.com/cloud-bulldozer/touchstone).
 Enabling this will create a few services to produce prometheus data aggregations from the apiserver pods
 
+### TOUCHSTONE_ES_HOST
+Default: ``
+Elasticsearch server host, set to index results from touchstone(prometheus metric data aggregations).
+
+### TOUCHSTONE_ES_PORT
+Default: ``
+Elasticsearch server port, set to index results from touchstone(prometheus metric data aggregations).
+
 ### EXPECTED_MASTERVERTICAL_DURATION
 Default: `600`  
 Pass/fail criteria. Value to determine if MasterVertical workload executed in duration expected.

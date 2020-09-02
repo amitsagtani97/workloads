@@ -37,6 +37,8 @@ pprof_collect: "{{ lookup('env', 'PPROF_COLLECT')|default(false, true)|bool|lowe
 
 # touchstone variables
 prom_aggregate_collect: "{{ lookup('env', 'PROM_AGGREGATE_COLLECT')|default(false, true)|bool|lower }}"
+touchstone_es_host: "{{ lookup('env', 'TOUCHSTONE_ES_HOST')|default('', true) }}"
+touchstone_es_port: "{{ lookup('env', 'TOUCHSTONE_ES_PORT')|default('', true) }}"
 
 # Azure auth vars to set for ocp on azure
 azure_auth: "{{ lookup('env', 'AZURE_AUTH')|default(false, true)|bool|lower }}"
